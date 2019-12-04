@@ -71,14 +71,16 @@ filtered = convolution_filter(
   kernel_delay = kernel_delay
 )
 
+##################################################
+##        write filtered signal to file         ##
+##################################################
 
-# write filtered signal to file
 scipy.io.wavfile.write("sound_filtered.wav",rate,filtered.astype('float32') )
+
 
 ##################################################
 ##      plot original and filtered signal       ##
 ##################################################
-
 
 time = np.linspace(0,1./rate * len(data) ,len(data) ) # time vector for x axis of plot
 plt.plot(time,data,label="original signal",alpha=0.6)
@@ -88,9 +90,4 @@ plt.ylabel("normalized amplitude")
 plt.title("waveform before and after filter")
 plt.legend()
 plt.show()
-
-
-
-
-
 
