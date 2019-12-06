@@ -90,3 +90,20 @@ plt.title("waveform before and after filter")
 plt.legend()
 plt.show()
 
+time = np.linspace(0,1./rate * len(data) ,len(data) ) # time vector for x axis of plot
+plt.plot(time,data,label="original signal",alpha=0.6)
+plt.xlabel("time (s)")
+plt.ylabel("normalized amplitude")
+plt.title("original signal")
+plt.legend()
+plt.show()
+
+time = np.linspace(0,1./rate * len(data) ,len(data) ) # time vector for x axis of plot
+plt.plot(time,data,label="original signal",alpha=0.1)
+plt.plot(time,filtered, label="filtered signal",alpha=0.6)
+plt.xlabel("time (s)")
+plt.ylabel("normalized amplitude")
+plt.title("signal after filter")
+plt.legend()
+plt.show()
+
