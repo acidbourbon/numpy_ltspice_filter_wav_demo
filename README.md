@@ -5,8 +5,7 @@ signal processing projects.
 
 For a demonstration of its uses:
 
-run ./filter_demo.py
-and ./fast_convolution_filter_demo.py
+run ./fast_conv_wav_filter_demo.py
 
 
 find an extensive article about this software example at:
