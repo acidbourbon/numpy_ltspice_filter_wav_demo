@@ -99,6 +99,13 @@ def get_impulse_response(simname, **kwargs):
   
 
 def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
+    
+  target_dir = os.path.dirname(simname)
+  here = os.getcwd()
+
+  if( target_dir != ""):
+    simname = os.path.basename(simname)
+    os.chdir(target_dir)
   
   verbose = kwargs.get("verbose",False)
   interpol = kwargs.get("interpolate",True)
@@ -106,14 +113,21 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
   default_ltspice_command = "C:\Program Files\LTC\LTspiceXVII\XVIIx64.exe -Run -b " 
   if sys.platform == "linux":
     default_ltspice_command = 'wine C:\\\\Program\\ Files\\\\LTC\\\\LTspiceXVII\\\\XVIIx64.exe -Run -b '
-  
+  elif sys.platform == "darwin":
+    default_ltspice_command = '/Applications/LTspice.app/Contents/MacOS/LTspice -b '
   ltspice_command = kwargs.get("ltspice_command",default_ltspice_command)
   
   
 
   params  = kwargs.get("params",{})
 
-  simname = simname.replace(".asc","")
+  
+  if sys.platform == "darwin":
+    simname = simname.replace(".cir","")
+  else:
+    simname = simname.replace(".asc","")
+  
+
 
   with open("sig_in.csv_","w") as f:
     for i in range(0,len(sig_in_x)):
@@ -174,6 +188,8 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
     #os.system("{:s} {:s}.asc > wine_ltspice.log 2>&1".format(simname))
     if sys.platform == "linux":
       os.system(ltspice_command+" {:s}.asc".format(simname))
+    elif sys.platform == "darwin":
+      os.system(ltspice_command+" {:s}.cir".format(simname))
     else:
       import subprocess
       subprocess.run([*ltspice_command.split(), "{:s}.asc".format(simname)])
@@ -205,10 +221,11 @@ def apply_ltspice_filter(simname,sig_in_x,sig_in_y,**kwargs):
  
   #  interpolate ltspice output, so you have the same x value spacing as in the input voltage vector
   if interpol:
-    f = interpolate.interp1d(vout_x,vout_y)
+    f = interpolate.interp1d(vout_x,vout_y, fill_value="extrapolate")
     vout_x = sig_in_x
     vout_y = f(sig_in_x)
   
+  os.chdir(here)
   return (vout_x,vout_y)
 
 
